@@ -1,5 +1,25 @@
 #include <stdint.h>
 
+#define NRF24L01_SPI            SPI1
+
+#define NRF24L01_SPI_CLOCK      RCC_APB2Periph_SPI1
+#define NRF24L01_SPI_GPIO_CLOCK RCC_AHB1Periph_GPIOA
+
+#define NRF24L01_SPI_GPIO       GPIOA
+#define NRF24L01_SPI_GPIO_AF    GPIO_AF_SPI1
+
+#define NRF24L01_GPIO_AF_MOSI   GPIO_PinSource7
+#define NRF24L01_GPIO_AF_MISO   GPIO_PinSource6
+#define NRF24L01_GPIO_AF_CSN    GPIO_PinSource4
+#define NRF24L01_GPIO_AF_SCK    GPIO_PinSource5
+
+#define NRF24L01_GPIO_MOSI      GPIO_Pin_7
+#define NRF24L01_GPIO_MISO      GPIO_Pin_6
+#define NRF24L01_GPIO_CSN       GPIO_Pin_4
+#define NRF24L01_GPIO_SCK       GPIO_Pin_5
+#define NRF24L01_GPIO_CE        GPIO_Pin_8
+#define NRF24L01_GPIO_IRQ       GPIO_Pin_9
+
 typedef enum
 {
 	NRF24L01_OK,
