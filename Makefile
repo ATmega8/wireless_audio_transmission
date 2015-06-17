@@ -32,7 +32,7 @@ SIZE=arm-none-eabi-size
 MAKE=make
 
 #编译选项
-CFLAGS  = -nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 
+CFLAGS  = -g -nostartfiles -Wl,--gc-sections -mthumb -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 
 CFLAGS += -mfloat-abi=hard -mabi=aapcs
 CFLAGS += -I inc
 CFLAGS += -I ../STM32F4xx_DSP_StdPeriph_Lib_V1.5.1/Libraries/STM32F4xx_StdPeriph_Driver/inc

@@ -20,6 +20,21 @@
 #define NRF24L01_GPIO_CE        GPIO_Pin_8
 #define NRF24L01_GPIO_IRQ       GPIO_Pin_9
 
+/***************
+           DMA Define
+		           ******************/
+
+#define SPIx_DMA_STREAM_CLK RCC_AHB1Periph_DMA2
+
+#define SPIx_TX_DMA_STREAM  DMA2_Stream3
+#define SPIx_RX_DMA_STREAM  DMA2_Stream2
+
+#define SPIx_TX_DMA_CHANNEL DMA_Channel_3
+#define SPIx_RX_DMA_CHANNEL DMA_Channel_3
+
+#define SPIx_RX_DMA_TCIF DMA_FLAG_TCIF2
+#define SPIx_TX_DMA_TCIF DMA_FLAG_TCIF3
+
 typedef enum
 {
 	NRF24L01_OK,
@@ -37,6 +52,9 @@ nRF24L01_StatusTypeDef nRF24L01_DeInit(void);
 
 nRF24L01_StatusTypeDef nRF24L01_SendData(void);
 nRF24L01_StatusTypeDef nRF24L01_ReceiveData(void);
+
+void nRF24L01_InterfaceInit(void);
+nRF24L01_StatusTypeDef nRF24L01_Test(void);
 
 void nRF24L01_DMAConfig(void);
 
