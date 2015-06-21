@@ -226,10 +226,6 @@ nRF24L01_StatusTypeDef nRF24L01_Test(void)
 	uint8_t writeBuf[5] = {0x34, 0x34, 0x34, 0x34, 0x34};
 	uint8_t readBuf[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 	uint8_t status, i;
-	const uint8_t power = 0x0D;
-
-	/*power off*/
-	//status = nRF24L01_WriteRegister(0x20, (uint8_t*)&power, 1);
 
 	status = nRF24L01_WriteRegister(0x2A, (uint8_t*)&writeBuf, 5);
 	status = nRF24L01_ReadRegister(0x0A, (uint8_t*)&readBuf, 5);
