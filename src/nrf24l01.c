@@ -240,6 +240,40 @@ nRF24L01_StatusTypeDef nRF24L01_Test(void)
 
 }
 
+nRF24L01_StatusTypeDef nRF24L01_Init(nRF24L01_InitTypeDef* nRF24L01_InitStructure)
+{
+	uint8_t tempreg;
+
+	nRF24L01_InterfaceInit();
+
+	if(nRF24L01_Test() == NRF24L01_ERROR)
+		return NRF24L01_ERROR;
+
+	if(nRF24L01_InitStructure->nRF24L01_Mode = NRF24L01_Mode_Transmission)
+	{
+		tempreg = EN_CRC;
+		nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
+	}
+	else if(nRF24L01_InitStructure->nRF24L01_Mode = NRF24L01_Mode_Receive)
+	{
+		tempreg = EN_CRC | PRIM_RX;
+		nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
+	}
+
+	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_Enable_AutoACK;
+	nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
+
+	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_Enable_RxAddr;
+	nRF24L01_WriteRegister(W_REG | EN_RX_REG_ADDR, &tempreg, 1);
+
+	tempreg = nRF24L01_InitStructure->nRF24L01_RF_Channal;
+	nRF24L01_WriteRegister(W_REG | RF_CH_REG_ADDR, &tempreg, 1);
+
+	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_DataRate;
+	tempreg |= (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_OutputPower;
+	nRF24L01_WriteRegister(W_REG | RF_SETUP_REG_ADDR, &tempreg, 1);
+}
+
 void nRF24L01_Delay(uint32_t timing)
 {
 	while( timing -- );

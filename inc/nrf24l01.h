@@ -96,7 +96,8 @@
 #define ENAA_P2              0x04
 #define ENAA_P1              0x02
 #define ENAA_P0              0x01
-#define ENAA_ALL             0x00
+#define ENAA_ALL             0x3F
+#define ENAA_DISABLE         0x00
 
 /* EN_RXADDR 地址使能*/
 #define EN_RXADDR_P5         0x20
@@ -105,7 +106,8 @@
 #define EN_RXADDR_P2         0x04
 #define EN_RXADDR_P1         0x02
 #define EN_RXADDR_P0         0x01
-#define EN_RXADDR_ALL        0x00
+#define EN_RXADDR_ALL        0x3F
+#define EN_RXADDR_DISABLE    0x00
 
 /* SETUP_AW 地址宽度*/
 #define AW_3Bytes            0x01
@@ -184,12 +186,71 @@ typedef enum
 
 typedef enum
 {
-	NRF24L01_Transmission,
-	NRF24L01_Receive
-} nRf24L01_ModeTypeDef;
+	NRF24L01_Mode_Transmission,
+	NRF24L01_Mode_Receive
+} nRF24L01_ModeTypeDef;
 
-nRF24L01_StatusTypeDef nRF24L01_Init(void);
-nRF24L01_StatusTypeDef nRF24L01_DeInit(void);
+typedef enum
+{
+	NRF24L01_Enable_AutoACK_0,
+	NRF24L01_Enable_AutoACK_1,
+	NRF24L01_Enable_AutoACK_2,
+	NRF24L01_Enable_AutoACK_3,
+	NRF24L01_Enable_AutoACK_4,
+	NRF24L01_Enable_AutoACK_5,
+	NRF24L01_Disable_AutoACK,
+	NRF24L01_Enable_AutoACK_All
+} nRF24L01_Enable_AutoACKTypeDef;
+
+typedef enum
+{
+	NRF24L01_Enable_RxAddr_0 = ENAA_P5,
+	NRF24L01_Enable_RxAddr_1 = ENAA_P4,
+	NRF24L01_Enable_RxAddr_2 = ENAA_P3,
+	NRF24L01_Enable_RxAddr_3 = ENAA_P2,
+	NRF24L01_Enable_RxAddr_4 = ENAA_P1,
+	NRF24L01_Enable_RxAddr_5 = ENAA_P0,
+	NRF24L01_Disable_RxAddr  = ENAA_DISABLE,
+	NRF24L01_Enable_RxAddr_All = ENAA_ALL
+} nRF24L01_Enable_RxAddrTypeDef;
+
+typedef enum
+{
+	NRF24L01_Address_Widths_3,
+	NRF24L01_Address_Widths_4,
+	NRF24L01_Address_Widths_5
+} nRF24L01_Address_WidthsTypeDef;
+
+typedef enum
+{
+	NRF24L01_RF_DataRate_250Kbps = 0x40,
+	NRF24L01_RF_DataRate_1Mbps = 0x00,
+	NRF24L01_RF_DataRate_2Mbps = 0x10
+} nRF24L01_RF_DataRateTypeDef;
+
+typedef enum
+{
+	NRF24L01_RF_OutputPower_N18dBm = 0x00,
+	NRF24L01_RF_OutputPower_N12dBm = 0x02,
+	NRF24L01_RF_OutputPower_N6dBm = 0x04,
+	NRF24L01_RF_OutputPower_0dBm = 0x06
+} nRF24L01_RF_OutputPowerTypeDef;
+
+typedef struct
+{
+	nRF24L01_ModeTypeDef nRF24L01_Mode;	
+	nRF24L01_Enable_AutoACKTypeDef nRF24L01_Enable_AutoACK;
+	nRF24L01_Enable_RxAddrTypeDef nRF24L01_Enable_RxAddr;
+	uint8_t nRF24L01_RF_Channal;
+	nRF24L01_RF_DataRateTypeDef nRF24L01_RF_DataRate;
+	nRF24L01_RF_OutputPowerTypeDef nRF24L01_RF_OutputPower;
+} nRF24L01_InitTypeDef;
+
+nRF24L01_StatusTypeDef nRF24L01_Init(nRF24L01_InitTypeDef* nRF24L01_InitStructure);
+void nRF24L01_DeInit(void);
+
+uint8_t nRF24L01_PowerUp(void);
+uint8_t nRF24L01_PowerDown(void);
 
 nRF24L01_StatusTypeDef nRF24L01_SendData(void);
 nRF24L01_StatusTypeDef nRF24L01_ReceiveData(void);
