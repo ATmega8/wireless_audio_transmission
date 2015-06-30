@@ -57,7 +57,7 @@ void nRF24L01_InterfaceInit(void)
  
     /* NRF24L01  IRQ pin configuration */
     GPIO_InitStructure.GPIO_Mode = GPIO_Mode_IN;
-    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_DOWN;
+    GPIO_InitStructure.GPIO_PuPd  = GPIO_PuPd_UP;
     GPIO_InitStructure.GPIO_Pin =  NRF24L01_GPIO_IRQ;
     GPIO_Init(NRF24L01_SPI_GPIO, &GPIO_InitStructure);
     
@@ -232,7 +232,7 @@ nRF24L01_StatusTypeDef nRF24L01_Test(void)
 
 	for(i = 0; i < 5; i++)
 	{
-		if(readBuf[i+1] != writeBuf[i])
+		if(readBuf[i] != writeBuf[i])
 			return NRF24L01_ERROR;
 	}
 
@@ -249,16 +249,26 @@ nRF24L01_StatusTypeDef nRF24L01_Init(nRF24L01_InitTypeDef* nRF24L01_InitStructur
 	if(nRF24L01_Test() == NRF24L01_ERROR)
 		return NRF24L01_ERROR;
 
-	if(nRF24L01_InitStructure->nRF24L01_Mode = NRF24L01_Mode_Transmission)
+	tempreg = 0x00; /*进入掉电模式*/
+	nRF24L01_WriteRegister(W_REG | CONFIG_REG_ADDR, &tempreg, 1);
+	tempreg = 0xFF; /*清除所有标志位*/
+	nRF24L01_WriteRegister(W_REG | STATUS_REG_ADDR, &tempreg, 1);
+
+	nRF24L01_Delay(1000);
+
+	if(nRF24L01_InitStructure->nRF24L01_Mode == NRF24L01_Mode_Transmission)
 	{
-		tempreg = EN_CRC;
-		nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
+		tempreg = EN_CRC | PWR_UP; /*进入上电模式，发送使能*/
+		nRF24L01_WriteRegister(W_REG | CONFIG_REG_ADDR, &tempreg, 1);
 	}
-	else if(nRF24L01_InitStructure->nRF24L01_Mode = NRF24L01_Mode_Receive)
+	else if(nRF24L01_InitStructure->nRF24L01_Mode == NRF24L01_Mode_Receive)
 	{
-		tempreg = EN_CRC | PRIM_RX;
-		nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
+		/*进入上电模式，接收使能*/
+		tempreg = EN_CRC | PWR_UP | PRIM_RX;
+		nRF24L01_WriteRegister(W_REG | CONFIG_REG_ADDR, &tempreg, 1);
 	}
+
+	nRF24L01_Delay(50000);
 
 	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_Enable_AutoACK;
 	nRF24L01_WriteRegister(W_REG | EN_AA_REG_ADDR, &tempreg, 1);
@@ -272,6 +282,26 @@ nRF24L01_StatusTypeDef nRF24L01_Init(nRF24L01_InitTypeDef* nRF24L01_InitStructur
 	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_DataRate;
 	tempreg |= (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_OutputPower;
 	nRF24L01_WriteRegister(W_REG | RF_SETUP_REG_ADDR, &tempreg, 1);
+
+	return NRF24L01_OK;
+}
+
+nRF24L01_StatusTypeDef nRF24L01_SendData(uint8_t* pdata)
+{ 
+	uint8_t tempreg;
+	nRF24L01_WriteRegister(W_TX_PAYLOAD, pdata, 32);
+
+	GPIO_SetBits(NRF24L01_SPI_GPIO, NRF24L01_GPIO_CE);
+	nRF24L01_Delay(100);
+	GPIO_ResetBits(NRF24L01_SPI_GPIO, NRF24L01_GPIO_CE);
+
+	nRF24L01_ReadRegister(CONFIG_REG_ADDR, &tempreg, 1);
+
+}
+
+nRF24L01_StatusTypeDef nRF24L01_ReceiveData(uint8_t* pdata)
+{
+
 }
 
 void nRF24L01_Delay(uint32_t timing)

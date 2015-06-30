@@ -192,24 +192,24 @@ typedef enum
 
 typedef enum
 {
-	NRF24L01_Enable_AutoACK_0,
-	NRF24L01_Enable_AutoACK_1,
-	NRF24L01_Enable_AutoACK_2,
-	NRF24L01_Enable_AutoACK_3,
-	NRF24L01_Enable_AutoACK_4,
-	NRF24L01_Enable_AutoACK_5,
-	NRF24L01_Disable_AutoACK,
-	NRF24L01_Enable_AutoACK_All
+	NRF24L01_Enable_AutoACK_0 = ENAA_P0,
+	NRF24L01_Enable_AutoACK_1 = ENAA_P1,
+	NRF24L01_Enable_AutoACK_2 = ENAA_P2,
+	NRF24L01_Enable_AutoACK_3 = ENAA_P3,
+	NRF24L01_Enable_AutoACK_4 = ENAA_P4,
+	NRF24L01_Enable_AutoACK_5 = ENAA_P5,
+	NRF24L01_Disable_AutoACK  = ENAA_DISABLE,    
+	NRF24L01_Enable_AutoACK_All = ENAA_ALL
 } nRF24L01_Enable_AutoACKTypeDef;
 
 typedef enum
 {
-	NRF24L01_Enable_RxAddr_0 = ENAA_P5,
-	NRF24L01_Enable_RxAddr_1 = ENAA_P4,
-	NRF24L01_Enable_RxAddr_2 = ENAA_P3,
+	NRF24L01_Enable_RxAddr_0 = ENAA_P0,
+	NRF24L01_Enable_RxAddr_1 = ENAA_P1,
+	NRF24L01_Enable_RxAddr_2 = ENAA_P2,
 	NRF24L01_Enable_RxAddr_3 = ENAA_P2,
-	NRF24L01_Enable_RxAddr_4 = ENAA_P1,
-	NRF24L01_Enable_RxAddr_5 = ENAA_P0,
+	NRF24L01_Enable_RxAddr_4 = ENAA_P4,
+	NRF24L01_Enable_RxAddr_5 = ENAA_P5,
 	NRF24L01_Disable_RxAddr  = ENAA_DISABLE,
 	NRF24L01_Enable_RxAddr_All = ENAA_ALL
 } nRF24L01_Enable_RxAddrTypeDef;
@@ -223,9 +223,9 @@ typedef enum
 
 typedef enum
 {
-	NRF24L01_RF_DataRate_250Kbps = 0x40,
+	NRF24L01_RF_DataRate_250Kbps = 0x20,
 	NRF24L01_RF_DataRate_1Mbps = 0x00,
-	NRF24L01_RF_DataRate_2Mbps = 0x10
+	NRF24L01_RF_DataRate_2Mbps = 0x08
 } nRF24L01_RF_DataRateTypeDef;
 
 typedef enum
@@ -252,8 +252,8 @@ void nRF24L01_DeInit(void);
 uint8_t nRF24L01_PowerUp(void);
 uint8_t nRF24L01_PowerDown(void);
 
-nRF24L01_StatusTypeDef nRF24L01_SendData(void);
-nRF24L01_StatusTypeDef nRF24L01_ReceiveData(void);
+nRF24L01_StatusTypeDef nRF24L01_SendData(uint8_t* pdata);
+nRF24L01_StatusTypeDef nRF24L01_ReceiveData(uint8_t* pdata);
 
 void nRF24L01_InterfaceInit(void);
 nRF24L01_StatusTypeDef nRF24L01_Test(void);
