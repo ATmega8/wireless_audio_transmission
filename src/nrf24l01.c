@@ -223,7 +223,7 @@ uint8_t nRF24L01_WriteRegister(uint8_t cmd, uint8_t* pdata, uint8_t len)
 
 nRF24L01_StatusTypeDef nRF24L01_Test(void)
 {
-	uint8_t writeBuf[5] = {0x34, 0x34, 0x34, 0x34, 0x34};
+	uint8_t writeBuf[5] = {0xE7, 0xE7, 0xE7, 0xE7, 0xE7};
 	uint8_t readBuf[5] = {0x00, 0x00, 0x00, 0x00, 0x00};
 	uint8_t status, i;
 
@@ -279,7 +279,12 @@ nRF24L01_StatusTypeDef nRF24L01_Init(nRF24L01_InitTypeDef* nRF24L01_InitStructur
 	tempreg = nRF24L01_InitStructure->nRF24L01_RF_Channal;
 	nRF24L01_WriteRegister(W_REG | RF_CH_REG_ADDR, &tempreg, 1);
 
+
+	tempreg = 32;
+	nRF24L01_WriteRegister(W_REG | 0x11, &tempreg, 1);
+
 	tempreg = (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_DataRate;
+
 	tempreg |= (uint8_t)nRF24L01_InitStructure->nRF24L01_RF_OutputPower;
 	nRF24L01_WriteRegister(W_REG | RF_SETUP_REG_ADDR, &tempreg, 1);
 
@@ -301,7 +306,18 @@ nRF24L01_StatusTypeDef nRF24L01_SendData(uint8_t* pdata)
 
 nRF24L01_StatusTypeDef nRF24L01_ReceiveData(uint8_t* pdata)
 {
+	uint8_t tempreg;
 
+	GPIO_SetBits(NRF24L01_SPI_GPIO, NRF24L01_GPIO_CE);
+
+	while(1)
+	{
+		nRF24L01_ReadRegister(R_RX_PAYLOAD, (uint8_t*)&pdata, 32);
+		nRF24L01_ReadRegister(R_REG | CONFIG_REG_ADDR, &tempreg, 1);
+		nRF24L01_ReadRegister(R_REG | STATUS_REG_ADDR, &tempreg, 1);
+		nRF24L01_ReadRegister(R_REG | TX_ADDR_REG_ADDR, &tempreg, 5);
+		nRF24L01_ReadRegister(R_REG | RX_ADDR_P0_REG_ADDR, &tempreg, 5);
+	}	
 }
 
 void nRF24L01_Delay(uint32_t timing)
